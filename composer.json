@@ -1,0 +1,32 @@
+{
+  "name": "ilsanto29/php-posta-online",
+  "description": "Posta Onlinesimple connector",
+  "keywords": [
+    "raccomandata",
+    "telegramma",
+    "lettera",
+    "posta online",
+    "pol",
+    "tol",
+    "lol",
+    "Poste Italiane",
+    "oauth",
+    "token"
+  ],
+  "type": "library",
+  "license": "(Apache-2.0 and MIT)",
+  "require": {
+    "php": ">=7.4",
+  },
+  "authors": [
+    {
+      "name": "ilsanto29",
+      "email": "alfonsoputtini@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "ilsanto29\\postaOnline\\": "src/"
+    }
+  }
+}
