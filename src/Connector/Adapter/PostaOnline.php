@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace postaOnline\Connector\Adapter;
+namespace Connector\Adapter;
 
 abstract class PostaOnline
 {
