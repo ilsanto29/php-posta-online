@@ -1,5 +1,5 @@
 <?php
-namespace Connector\Exception;
+namespace phpPostaOnline\Connector\Exception;
 
 use UnexpectedValueException;
 

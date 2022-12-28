@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Version;
+namespace phpPostaOnline\Version;
 
 final class Version
 {

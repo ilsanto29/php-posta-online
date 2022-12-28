@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
-namespace Connector;
-use Connector\Adapter\PostaOnline;
+namespace phpPostaOnline\Connector;
+use phpPostaOnline\Connector\Adapter\PostaOnline;
 
 class PolConnector extends  PostaOnline
 {
     protected $config = null;
     
-    public function __construct():void {
+    public function __construct() {
         
     }
     
