@@ -1,6 +1,6 @@
 {
 	"name": "ilsanto29/php-posta-online",
-	"description": "Posta Onlinesimple connector",
+	"description": "Posta Online Simple Connector",
 	"keywords": [
 		"raccomandata",
 		"telegramma",
@@ -23,7 +23,7 @@
 	],
 	"autoload": {
 		"psr-4": {
-			"postaOnline\\": "src/"
+			"phpPostaOnline\\": "src/"
 		}
 	},
 	"require": {
