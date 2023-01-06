@@ -3,5 +3,6 @@ namespace phpPostaOnline\Connector\Payload\Request\Tol;
 
 class IndirizziElettronici
 {
-    public $IndirizzoElettronico;
+    public $IndirizzoElettronico = array(new IndirizzoElettronico());
+        
 }

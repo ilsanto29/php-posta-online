@@ -3,9 +3,21 @@ declare(strict_types=1);
 namespace phpPostaOnline\Connector;
 use phpPostaOnline\Connector\Adapter\PostaOnline;
 use Laminas\Soap\Client;
+use phpPostaOnline\Connector\Exception\Exception;
 
 class PolConnector extends PostaOnline
 {
+    
+    private static $messages = array(
+        JSON_ERROR_DEPTH => 'The maximum stack depth has been exceeded',
+        JSON_ERROR_STATE_MISMATCH => 'Syntax error, malformed JSON',
+        JSON_ERROR_CTRL_CHAR => 'Unexpected control character found',
+        JSON_ERROR_SYNTAX => 'Syntax error, malformed JSON',
+        5 /*JSON_ERROR_UTF8*/ => 'Invalid UTF-8 sequence',
+        6 /*JSON_ERROR_RECURSION*/ => 'Recursion detected',
+        7 /*JSON_ERROR_INF_OR_NAN*/ => 'Inf and NaN cannot be JSON encoded',
+        8 /*JSON_ERROR_UNSUPPORTED_TYPE*/ => 'Type is not supported',
+    );
     
     public function __construct($config = null) {              
         if (! isset($config['postalService'])) {
@@ -19,7 +31,8 @@ class PolConnector extends PostaOnline
     
     public function connect():bool {
         $config = [
-            'soap_version' => SOAP_1_1 , 'compression' => SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_DEFLATE,
+            'soap_version' => SOAP_1_1 , 
+            'compression' => SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_DEFLATE,
             'cachewsdl' => WSDL_CACHE_MEMORY,
             'connectiontimeout' => 10,
             'features' => SOAP_SINGLE_ELEMENT_ARRAYS,
@@ -58,14 +71,12 @@ class PolConnector extends PostaOnline
     }
     
     private function login($username, $password):void {
-        
-        
         if( empty( $username) || empty( $password) ) {
             $username = $this->config["username"];
             $password = $this->config["password"];
         }
         if( empty( $username ) || empty( $password )) {
-            throw new \Exception('Check Username or\and Password');
+            throw new \Exception('Check Username or\\and Password');
         }        
         $this->client->setHttpLogin($username);
         $this->client->setHttpPassword($password);
@@ -73,13 +84,15 @@ class PolConnector extends PostaOnline
     
     
     public function __call($SoapAction = null, $data = []) {
+        // needed to receive 'recursion detected' error
+        set_error_handler(function($severity, $message) {
+            restore_error_handler();
+            throw new JsonException($message);
+        });
+        
         try {
-            //              echo "<pre>";
-            //              var_dump( $data );
-            //              echo "</pre>"; die();
             $username = (!empty( $data[0]["username"] )?$data[0]["username"]:null);
-            $password = (!empty( $data[0]["password"] )?$data[0]["password"]:null);
-            
+            $password = (!empty( $data[0]["password"] )?$data[0]["password"]:null);            
             $this->connect();
             $this->login( $username , $password );
             $ret = $this->client->call( $SoapAction, (!empty($data[0]["data"])?$data[0]["data"]:null) );
@@ -95,7 +108,7 @@ class PolConnector extends PostaOnline
                 echo "Errore 1 " . $e->getMessage(); die();                
                 echo $ret; die();
             }            
-            throw new \Exception($e->getMessage(), $e->getCode() );
+            throw new Exception($e->getMessage(), $e->getCode() );
             
         } catch (\SoapFault $e ) {
             $xml = $this->client->getLastRequest();
@@ -105,7 +118,7 @@ class PolConnector extends PostaOnline
                 echo "Errore 1 " . $e->getMessage(); die();
                 echo $ret; die();
             }
-            throw new \Exception($e->getMessage(), $e->getCode() );
+            throw new Exception($e->getMessage(), $e->getCode() );
         } catch (RuntimeException $e) {
             $xml = $this->client->getLastRequest();
             $ret = $e->getMessage();
@@ -114,10 +127,10 @@ class PolConnector extends PostaOnline
                 echo "Errore 1 " . $e->getMessage(); die();
                 echo $ret; die();
             }
-            throw new \Exception($e->getMessage(), $e->getCode() );
+            throw new Exception($e->getMessage(), $e->getCode() );
         }
         return false;
         //throw new \Exception("Non e' stato possibile reperire la richiesta", 90001);
-    }    
+    }  
     
 }
